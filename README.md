@@ -39,7 +39,13 @@ uv sync
 uv run python scripts/seed_data.py
 uv run python scripts/make_drift.py
 
-docker compose up -d
+# Linux only: run the Airflow containers as your own user, so files written
+# by pipeline tasks stay editable by you. Mac and Windows skip this line.
+echo "AIRFLOW_UID=$(id -u)" > .env
+
+# --wait holds until every service reports healthy, so when this returns
+# the lab is actually ready.
+docker compose up -d --wait
 
 export MLFLOW_TRACKING_URI=http://localhost:5001
 ```
@@ -54,6 +60,13 @@ uv run python -m src.train
 ```
 
 You should see an RMSE and a `model.pkl` file.
+
+Then run the setup check. It looks at everything above and tells you what to
+fix if something is off:
+
+```bash
+uv run python scripts/check_setup.py
+```
 
 ## Services
 

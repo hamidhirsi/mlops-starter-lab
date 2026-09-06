@@ -16,6 +16,12 @@ x-airflow-common: &airflow-common
   # Your whole repository is mounted here so DAG tasks can run project code
   # with the same module paths you use on the host, for example
   # `python -m src.train`.
+  # On Linux, files written by Airflow tasks into the mounted repository would
+  # belong to the container user, and you could not edit or delete them. Running
+  # the containers as your own user id fixes that: put AIRFLOW_UID=$(id -u) in a
+  # .env file (see .env.example). Mac and Windows do not need it. This is the
+  # same approach the official Airflow compose file takes.
+  user: "${AIRFLOW_UID:-50000}:0"
   working_dir: /opt/project
   volumes:
     - .:/opt/project
