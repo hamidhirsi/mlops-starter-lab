@@ -1,0 +1,11 @@
+# Tells Grafana to load every dashboard JSON it finds in this folder.
+# There are none yet: building the dashboard is one of your exercises.
+# Drop your JSON file next to this one and restart the grafana container.
+apiVersion: 1
+
+providers:
+  - name: mlops-lab
+    folder: ""
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards

@@ -1,0 +1,28 @@
+# Generated data: recreate with scripts/seed_data.py and scripts/make_drift.py
+data/*.csv
+feature_repo/data/*.parquet
+
+# Feast local stores (created when you run feast apply / materialize)
+feature_repo/data/registry.db
+feature_repo/data/online_store.db
+
+# Model and monitoring outputs
+model.pkl
+drift_report.html
+drift_summary.json
+
+# MLflow
+mlflow-artifacts/*
+!mlflow-artifacts/.gitkeep
+mlruns/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Local environment
+.env
+.DS_Store

@@ -1,0 +1,37 @@
+[project]
+name = "mlops-starter-lab"
+version = "0.1.0"
+description = "Starter repository for the MLOps course exercises"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "pandas==2.2.3",
+    "numpy==1.26.4",
+    "scikit-learn==1.5.2",
+    "joblib==1.4.2",
+    "mlflow==3.15.1",
+    "feast[redis]==0.49.0",
+    "evidently==0.5.1",
+    "fastapi==0.115.6",
+    "uvicorn==0.34.0",
+    "pydantic==2.10.6",
+    "prometheus-client==0.21.1",
+    "pytest==8.3.4",
+    "ruff==0.9.6",
+    "pyarrow==17.0.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Lets test files import project code with `from src... import ...`.
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py311"
+exclude = [".venv", "mlflow-artifacts", "feature_repo/data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
