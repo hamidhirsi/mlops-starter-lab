@@ -13,6 +13,12 @@ x-airflow-common: &airflow-common
     # Tasks inside Airflow reach the tracking server over the compose network,
     # where its name is mlflow, not localhost.
     MLFLOW_TRACKING_URI: http://mlflow:5000
+    # How often the scheduler looks for brand new DAG files. The default is
+    # 300 seconds, which means a freshly created DAG can take five minutes to
+    # become triggerable, while `airflow dags list` (which reads the files
+    # directly) already shows it. Thirty seconds keeps the pipeline exercise
+    # moving.
+    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "30"
   # Your whole repository is mounted here so DAG tasks can run project code
   # with the same module paths you use on the host, for example
   # `python -m src.train`.

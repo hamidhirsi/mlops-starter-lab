@@ -8,6 +8,7 @@ feature_repo/data/online_store.db
 
 # Model and monitoring outputs
 model.pkl
+checkpoint.pkl
 drift_report.html
 drift_summary.json
 

@@ -96,15 +96,79 @@ has the project dependencies installed, so a DAG task can run the same
 
 ## Troubleshooting
 
-- Port already in use: another program owns the port. `docker ps` shows other
-  containers; `lsof -i :5001` (or the port in question) shows host programs.
-  Stop whatever owns it and run `docker compose up -d` again.
-- A service keeps restarting: read its logs with
-  `docker compose logs <service-name> --tail 50`.
-- Airflow login page not loading: the webserver takes a minute or two on a
-  cold start. Check progress with `docker compose logs airflow-webserver`.
-- Start over completely: `docker compose down -v` removes the containers and
-  their data volumes. Your files and the MLflow artifacts folder stay.
+Before anything else, run the two check scripts. They diagnose most problems
+and print the fix:
+
+```bash
+uv run python scripts/check_setup.py     # checks the whole lab
+uv run python scripts/check.py 4         # checks one exercise, here number 4
+```
+
+Known problems, with the exact message you would see:
+
+- `Bind for 0.0.0.0:5001 failed: port is already allocated` (any port):
+  another program or container owns that port. Find it with `lsof -i :5001`
+  or `docker ps`, stop it, then run `docker compose up -d --wait` again.
+
+- A service shows `Restarting` in `docker compose ps`: it is crashing on
+  startup. Read why with `docker compose logs <service-name> --tail 50`.
+
+- The Airflow page at http://localhost:8081 does not load: the webserver
+  takes a minute or two on a cold start. Watch it with
+  `docker compose logs airflow-webserver --tail 20` and wait for
+  `Listening at: http://0.0.0.0:8080`.
+
+- `403 Forbidden` on every MLflow call from inside Airflow: the
+  `MLFLOW_SERVER_ALLOWED_HOSTS` variable on the mlflow service was changed
+  or removed. MLflow 3 rejects any Host header it has not been told to
+  trust, and containers reach the server as `mlflow:5000`. Restore the line
+  in `docker-compose.yml` and run `docker compose up -d mlflow`.
+
+- The Feast reads return `NaN` or empty results: the feature timestamps
+  have aged out of the 30 day time to live, which happens if you generated
+  the data more than 30 days ago. Rebuild and re-materialise:
+
+  ```bash
+  uv run python scripts/seed_data.py
+  cd feature_repo && uv run feast materialize-incremental $(date -u +'%Y-%m-%dT%H:%M:%S') && cd ..
+  ```
+
+- Docker builds fail or containers get killed for no clear reason: Docker
+  has too little memory. Give it at least 6 GB in Docker Desktop settings,
+  then restart Docker.
+
+- The `retrain_model` task fails with `command returned a non-zero exit
+  code -9`: the training run was killed by the out of memory killer inside
+  the container. Train with fewer trees (250 fits comfortably, 300 does
+  not on an 8 GB Docker virtual machine), or give Docker more memory.
+
+- `DagNotFound: Dag id retrain_on_drift not found in DagModel` right after
+  you created the DAG file: the scheduler registers new files on a scan
+  that runs every 30 seconds, while `airflow dags list` reads the files
+  directly and shows it immediately. Wait half a minute and trigger again.
+
+- `INFO ... Waiting up to 300 seconds for model version to finish creation`
+  when registering a model: this is normal and returns immediately against
+  the local server. It is not a hang.
+
+- `WARNING mlflow.utils.environment: Failed to resolve installed pip
+  version` when training with tracking on: harmless. MLflow could not pin
+  the pip version in the model's environment file; everything else is
+  recorded correctly.
+
+- `Downloading artifacts: 100%` progress bars when loading a model: normal
+  MLflow output, not an error.
+
+- `curl http://localhost:8000/metrics` prints nothing: the metrics app
+  lives at the path with a trailing slash. Use
+  `curl -s http://localhost:8000/metrics/ | grep prediction`. Prometheus
+  itself follows the redirect and is unaffected.
+
+- `Matplotlib is building the font cache` on the first `feast apply`: a
+  one-time message from a Feast dependency. It never appears again.
+
+- Start over completely: `docker compose down -v` removes the containers
+  and their data volumes. Your files and the MLflow artifacts folder stay.
 
 ## Pinned versions
 
