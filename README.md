@@ -94,6 +94,23 @@ workflow into `.github/workflows/`, a dashboard JSON into
 has the project dependencies installed, so a DAG task can run the same
 `python -m src.train` you run on the host.
 
+## Reference solutions
+
+The `solutions/` folder holds one reference solution per exercise,
+snapshotted at the end of that exercise. Attempt the exercise first, pass its
+check script, then compare your file against the reference with `diff`.
+`solutions/README.md` explains the flow. Reading a solution before attempting
+the exercise teaches very little, and nobody is grading the diff.
+
+## Reference solutions
+
+The `solutions/` folder holds one reference solution per exercise,
+snapshotted at the end of that exercise. Attempt the exercise first, pass its
+check script, then compare your file against the reference with `diff`. The
+folder's own README explains the flow. Reading a solution before attempting
+the exercise teaches very little; comparing after an honest attempt is where
+it sticks.
+
 ## Troubleshooting
 
 Before anything else, run the two check scripts. They diagnose most problems
@@ -166,6 +183,10 @@ Known problems, with the exact message you would see:
 
 - `Matplotlib is building the font cache` on the first `feast apply`: a
   one-time message from a Feast dependency. It never appears again.
+
+- `empty cryptography key - values will not be stored encrypted` in Airflow
+  logs: expected. The lab sets no Fernet key because it stores no credentials
+  in Airflow. See .env.example if you want to set one.
 
 - Start over completely: `docker compose down -v` removes the containers
   and their data volumes. Your files and the MLflow artifacts folder stay.

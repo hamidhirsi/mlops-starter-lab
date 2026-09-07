@@ -1,0 +1,7 @@
+# Files feast apply should not scan for feature definitions.
+#
+# feast apply imports every Python file in this folder looking for entities
+# and feature views. read_features.py is a script you run, not a definition
+# file: without this ignore entry, re-running feast apply after you create it
+# would import it, execute it from the wrong working directory, and crash.
+read_features.py

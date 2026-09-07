@@ -8,6 +8,11 @@ x-airflow-common: &airflow-common
   environment: &airflow-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+    # The Fernet key encrypts connection passwords Airflow stores in its
+    # database. This lab stores none, so it can be empty: Airflow then logs a
+    # warning and stores nothing encrypted, which is fine here. Set a real one
+    # in .env if you want the warning gone (see .env.example). Never commit a
+    # real key: this line reads it from the environment for exactly that reason.
     AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
     AIRFLOW__CORE__LOAD_EXAMPLES: "False"
     # Tasks inside Airflow reach the tracking server over the compose network,
