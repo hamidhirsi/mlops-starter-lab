@@ -98,18 +98,10 @@ has the project dependencies installed, so a DAG task can run the same
 
 The `solutions/` folder holds one reference solution per exercise,
 snapshotted at the end of that exercise. Attempt the exercise first, pass its
-check script, then compare your file against the reference with `diff`.
-`solutions/README.md` explains the flow. Reading a solution before attempting
-the exercise teaches very little, and nobody is grading the diff.
-
-## Reference solutions
-
-The `solutions/` folder holds one reference solution per exercise,
-snapshotted at the end of that exercise. Attempt the exercise first, pass its
 check script, then compare your file against the reference with `diff`. The
-folder's own README explains the flow. Reading a solution before attempting
-the exercise teaches very little; comparing after an honest attempt is where
-it sticks.
+`solutions/README.md` explains the flow. Reading a solution before attempting
+the exercise teaches very little; but comparing after an honest attempt is
+where it sticks.
 
 ## Troubleshooting
 
