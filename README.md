@@ -1,6 +1,6 @@
 # mlops-starter-lab
 
-The starter repository for the MLOps course. It gives you a working training
+The starter repository for learning  MLOps. It gives you a working training
 script, seed data, and a set of running services. Everything else, the
 tracking, the registry, the feature store, the serving API, the tests, the
 CI pipeline, the dashboards, and the retraining DAG, you build yourself,
